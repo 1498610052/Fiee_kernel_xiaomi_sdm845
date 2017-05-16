@@ -1,10 +1,6 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
-<<<<<<< HEAD
-** Copyright (C) 2019 XiaoMi, Inc.
-=======
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -35,18 +31,6 @@
 
 #define	TIAUDIO_CMD_REG_WITE			1
 #define	TIAUDIO_CMD_REG_READ			2
-<<<<<<< HEAD
-#define	TIAUDIO_CMD_PROGRAM			3
-#define	TIAUDIO_CMD_CONFIGURATION		4
-#define	TIAUDIO_CMD_FW_TIMESTAMP		5
-#define	TIAUDIO_CMD_CALIBRATION			6
-#define	TIAUDIO_CMD_SAMPLERATE			7
-#define	TIAUDIO_CMD_BITRATE			8
-#define	TIAUDIO_CMD_DACVOLUME			9
-#define	TIAUDIO_CMD_SPEAKER			10
-#define	TIAUDIO_CMD_FW_RELOAD			11
-#define	TIAUDIO_CMD_MUTE			12
-=======
 #define	TIAUDIO_CMD_DEBUG_ON			3
 #define	TIAUDIO_CMD_PROGRAM			4
 #define	TIAUDIO_CMD_CONFIGURATION		5
@@ -58,7 +42,6 @@
 #define	TIAUDIO_CMD_SPEAKER			11
 #define	TIAUDIO_CMD_FW_RELOAD			12
 #define	TIAUDIO_CMD_MUTE			13
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 
 #define	TAS2559_MAGIC_NUMBER	0xe0
 

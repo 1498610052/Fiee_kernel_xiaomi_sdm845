@@ -1,10 +1,6 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
-<<<<<<< HEAD
-** Copyright (C) 2019 XiaoMi, Inc.
-=======
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -199,10 +195,7 @@ static ssize_t tas2559_file_read(struct file *file, char *buf, size_t count, lof
 					ret = copy_to_user(buf, p_kBuf, count);
 
 					if (ret != 0) {
-<<<<<<< HEAD
-=======
 						/* Failed to copy all the data, exit */
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 						dev_err(pTAS2559->dev, "copy to user fail %d\n", ret);
 					}
 
@@ -345,15 +338,10 @@ static ssize_t tas2559_file_write(struct file *file, const char *buf, size_t cou
 
 	p_kBuf = kzalloc(count, GFP_KERNEL);
 
-<<<<<<< HEAD
-	if (p_kBuf == NULL)
-		goto err;
-=======
 	if (p_kBuf == NULL) {
 		dev_err(pTAS2559->dev, "write no mem\n");
 		goto err;
 	}
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 
 	ret = copy_from_user(p_kBuf, buf, count);
 
@@ -409,8 +397,6 @@ static ssize_t tas2559_file_write(struct file *file, const char *buf, size_t cou
 			dev_err(pTAS2559->dev, "read len fail.\n");
 
 		break;
-<<<<<<< HEAD
-=======
 
 	case TIAUDIO_CMD_DEBUG_ON: {
 		if (count == 2)
@@ -418,7 +404,6 @@ static ssize_t tas2559_file_write(struct file *file, const char *buf, size_t cou
 
 		pTAS2559->mnDBGCmd = 0;
 	}
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 	break;
 
 	case TIAUDIO_CMD_PROGRAM: {

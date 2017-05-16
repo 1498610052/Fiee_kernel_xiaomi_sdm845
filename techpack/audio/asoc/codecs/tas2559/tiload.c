@@ -1,10 +1,6 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
-<<<<<<< HEAD
-** Copyright (C) 2019 XiaoMi, Inc.
-=======
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -42,12 +38,6 @@
 
 #include "tiload.h"
 
-<<<<<<< HEAD
-=======
-/* enable debug prints in the driver */
-/*#define DEBUG*/
-
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 static struct cdev *tiload_cdev;
 static int tiload_major; /* Dynamic allocation of Mjr No. */
 static int tiload_opened; /* Dynamic allocation of Mjr No. */
@@ -57,10 +47,7 @@ static unsigned int magic_num;
 
 static char gPage;
 static char gBook;
-<<<<<<< HEAD
-=======
 /******************************** Debug section *****************************/
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 
 
 /*----------------------------------------------------------------------------
@@ -168,11 +155,7 @@ static ssize_t tiload_read(struct file *filp, char __user *buf,
 		kfree(rd_data);
 		return -EINVAL;
 	}
-<<<<<<< HEAD
-        kfree(rd_data);
-=======
     kfree(rd_data);
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 	return size;
 }
 
@@ -202,16 +185,10 @@ static ssize_t tiload_write(struct file *filp, const char __user *buf,
 	}
 
 	wr_data = kmalloc(MAX_LENGTH + 1, GFP_KERNEL | GFP_DMA);
-<<<<<<< HEAD
-	if (wr_data == NULL)
-		return -EINVAL;
-
-=======
 	if(wr_data == NULL) {
 		dev_err(pTAS2559->dev, "kmalloc fail \n");
 		return -EINVAL;
 	}
->>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 	pData = wr_data;
 	/* copy buffer from user space  */
 	size = copy_from_user(wr_data, buf, count);
