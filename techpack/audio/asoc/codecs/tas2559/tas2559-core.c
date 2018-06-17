@@ -1,7 +1,10 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
+<<<<<<< HEAD
 ** Copyright (C) 2019 XiaoMi, Inc.
+=======
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -724,7 +727,11 @@ int tas2559_set_VBoost(struct tas2559_priv *pTAS2559, int vboost, bool bPowerOn)
 	}
 
 	if (bPowerOn) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "%s, will load VBoost state next time before power on\n", __func__);
+=======
+		dev_info(pTAS2559->dev, "%s, will load VBoost state next time before power on\n", __func__);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		pTAS2559->mbLoadVBoostPrePowerUp = true;
 		pTAS2559->mnVBoostNewState = vboost;
 		goto end;
@@ -1327,7 +1334,11 @@ int tas2559_set_sampling_rate(struct tas2559_priv *pTAS2559, unsigned int nSampl
 	pConfiguration = &(pTAS2559->mpFirmware->mpConfigurations[pTAS2559->mnCurrentConfiguration]);
 
 	if (pConfiguration->mnSamplingRate == nSamplingRate) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "Sampling rate for current configuration matches: %d\n",
+=======
+		dev_info(pTAS2559->dev, "Sampling rate for current configuration matches: %d\n",
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 			 nSamplingRate);
 		nResult = 0;
 		goto end;
@@ -1341,7 +1352,11 @@ int tas2559_set_sampling_rate(struct tas2559_priv *pTAS2559, unsigned int nSampl
 
 		if ((pConfiguration->mnSamplingRate == nSamplingRate)
 		    && (pConfiguration->mnProgram == pTAS2559->mnCurrentProgram)) {
+<<<<<<< HEAD
 			dev_dbg(pTAS2559->dev,
+=======
+			dev_info(pTAS2559->dev,
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 				 "Found configuration: %s, with compatible sampling rate %d\n",
 				 pConfiguration->mpName, nSamplingRate);
 			nResult = tas2559_load_configuration(pTAS2559, nConfiguration, false);
@@ -1359,6 +1374,7 @@ end:
 
 static void fw_print_header(struct tas2559_priv *pTAS2559, struct TFirmware *pFirmware)
 {
+<<<<<<< HEAD
 	dev_dbg(pTAS2559->dev, "FW Size       = %d", pFirmware->mnFWSize);
 	dev_dbg(pTAS2559->dev, "Checksum      = 0x%04X", pFirmware->mnChecksum);
 	dev_dbg(pTAS2559->dev, "PPC Version   = 0x%04X", pFirmware->mnPPCVersion);
@@ -1367,6 +1383,16 @@ static void fw_print_header(struct tas2559_priv *pTAS2559, struct TFirmware *pFi
 	dev_dbg(pTAS2559->dev, "Timestamp     = %d", pFirmware->mnTimeStamp);
 	dev_dbg(pTAS2559->dev, "DDC Name      = %s", pFirmware->mpDDCName);
 	dev_dbg(pTAS2559->dev, "Description   = %s", pFirmware->mpDescription);
+=======
+	dev_info(pTAS2559->dev, "FW Size       = %d", pFirmware->mnFWSize);
+	dev_info(pTAS2559->dev, "Checksum      = 0x%04X", pFirmware->mnChecksum);
+	dev_info(pTAS2559->dev, "PPC Version   = 0x%04X", pFirmware->mnPPCVersion);
+	dev_info(pTAS2559->dev, "FW  Version    = 0x%04X", pFirmware->mnFWVersion);
+	dev_info(pTAS2559->dev, "Driver Version= 0x%04X", pFirmware->mnDriverVersion);
+	dev_info(pTAS2559->dev, "Timestamp     = %d", pFirmware->mnTimeStamp);
+	dev_info(pTAS2559->dev, "DDC Name      = %s", pFirmware->mpDDCName);
+	dev_info(pTAS2559->dev, "Description   = %s", pFirmware->mpDescription);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 }
 
 static inline unsigned int fw_convert_number(unsigned char *pData)
@@ -2400,7 +2426,11 @@ static int tas2559_load_configuration(struct tas2559_priv *pTAS2559,
 	if ((!pTAS2559->mbLoadConfigurationPrePowerUp)
 	    && (nConfiguration == pTAS2559->mnCurrentConfiguration)
 	    && (!bLoadSame)) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "Configuration %d is already loaded\n",
+=======
+		dev_info(pTAS2559->dev, "Configuration %d is already loaded\n",
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 			 nConfiguration);
 		nResult = 0;
 		goto end;
@@ -2566,7 +2596,11 @@ static int tas2559_load_calibration(struct tas2559_priv *pTAS2559,	char *pFileNa
 	set_fs(KERNEL_DS);
 	nFile = sys_open(pFileName, O_RDONLY, 0);
 
+<<<<<<< HEAD
 	dev_dbg(pTAS2559->dev, "TAS2559 calibration file = %s, handle = %d\n",
+=======
+	dev_info(pTAS2559->dev, "TAS2559 calibration file = %s, handle = %d\n",
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		 pFileName, nFile);
 
 	if (nFile >= 0) {
@@ -2584,13 +2618,21 @@ static int tas2559_load_calibration(struct tas2559_priv *pTAS2559,	char *pFileNa
 		goto end;
 
 	tas2559_clear_firmware(pTAS2559->mpCalFirmware);
+<<<<<<< HEAD
 	dev_dbg(pTAS2559->dev, "TAS2559 calibration file size = %d\n", nSize);
+=======
+	dev_info(pTAS2559->dev, "TAS2559 calibration file size = %d\n", nSize);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 	nResult = fw_parse(pTAS2559, pTAS2559->mpCalFirmware, pBuffer, nSize);
 
 	if (nResult)
 		dev_err(pTAS2559->dev, "TAS2559 calibration file is corrupt\n");
 	else
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "TAS2559 calibration: %d calibrations\n",
+=======
+		dev_info(pTAS2559->dev, "TAS2559 calibration: %d calibrations\n",
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 			 pTAS2559->mpCalFirmware->mnCalibrations);
 
 end:
@@ -2612,7 +2654,11 @@ void tas2559_fw_ready(const struct firmware *pFW, void *pContext)
 #ifdef CONFIG_TAS2559_MISC
 	mutex_lock(&pTAS2559->file_lock);
 #endif
+<<<<<<< HEAD
 	dev_dbg(pTAS2559->dev, "%s:\n", __func__);
+=======
+	dev_info(pTAS2559->dev, "%s:\n", __func__);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 
 	if (unlikely(!pFW) || unlikely(!pFW->data)) {
 		dev_err(pTAS2559->dev, "%s firmware is not loaded.\n",
@@ -2648,7 +2694,11 @@ void tas2559_fw_ready(const struct firmware *pFW, void *pContext)
 	}
 
 	if (nProgram >= pTAS2559->mpFirmware->mnPrograms) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev,
+=======
+		dev_info(pTAS2559->dev,
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 			 "no previous program, set to default\n");
 		nProgram = 0;
 	}
@@ -2707,10 +2757,17 @@ int tas2559_set_program(struct tas2559_priv *pTAS2559,
 			if (pTAS2559->mpFirmware->mpConfigurations[nConfiguration].mnProgram == nProgram) {
 				if (nSampleRate == 0) {
 					bFound = true;
+<<<<<<< HEAD
 					dev_dbg(pTAS2559->dev, "find default configuration %d\n", nConfiguration);
 				} else if (nSampleRate == pTAS2559->mpFirmware->mpConfigurations[nConfiguration].mnSamplingRate) {
 					bFound = true;
 					dev_dbg(pTAS2559->dev, "find matching configuration %d\n", nConfiguration);
+=======
+					dev_info(pTAS2559->dev, "find default configuration %d\n", nConfiguration);
+				} else if (nSampleRate == pTAS2559->mpFirmware->mpConfigurations[nConfiguration].mnSamplingRate) {
+					bFound = true;
+					dev_info(pTAS2559->dev, "find matching configuration %d\n", nConfiguration);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 				} else {
 					nConfiguration++;
 				}
@@ -2739,7 +2796,11 @@ int tas2559_set_program(struct tas2559_priv *pTAS2559,
 	pProgram = &(pTAS2559->mpFirmware->mpPrograms[nProgram]);
 
 	if (pTAS2559->mbPowerUp) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev,
+=======
+		dev_info(pTAS2559->dev,
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 			 "device powered up, power down to load program %d (%s)\n",
 			 nProgram, pProgram->mpName);
 
@@ -2765,7 +2826,11 @@ int tas2559_set_program(struct tas2559_priv *pTAS2559,
 	if (nResult < 0)
 		goto end;
 
+<<<<<<< HEAD
 	dev_dbg(pTAS2559->dev, "load program %d (%s)\n", nProgram, pProgram->mpName);
+=======
+	dev_info(pTAS2559->dev, "load program %d (%s)\n", nProgram, pProgram->mpName);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 	nResult = tas2559_load_data(pTAS2559, &(pProgram->mData), TAS2559_BLOCK_PGM_DEV_A);
 	if (nResult < 0)
 		goto end;
@@ -2783,7 +2848,11 @@ int tas2559_set_program(struct tas2559_priv *pTAS2559,
 		goto end;
 
 	if (pTAS2559->mbPowerUp) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "%s, load VBoost before power on %d\n", __func__, pTAS2559->mnVBoostState);
+=======
+		dev_info(pTAS2559->dev, "%s, load VBoost before power on %d\n", __func__, pTAS2559->mnVBoostState);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		nResult = tas2559_set_VBoost(pTAS2559, pTAS2559->mnVBoostState, false);
 		if (nResult < 0)
 			goto end;
@@ -2850,7 +2919,11 @@ int tas2559_set_calibration(struct tas2559_priv *pTAS2559, int nCalibration)
 	}
 
 	if (nCalibration == 0x00FF) {
+<<<<<<< HEAD
 		dev_dbg(pTAS2559->dev, "load new calibration file %s\n", TAS2559_CAL_NAME);
+=======
+		dev_info(pTAS2559->dev, "load new calibration file %s\n", TAS2559_CAL_NAME);
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		nResult = tas2559_load_calibration(pTAS2559, TAS2559_CAL_NAME);
 
 		if (nResult < 0) {

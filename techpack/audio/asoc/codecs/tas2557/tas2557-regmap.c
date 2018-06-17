@@ -1,7 +1,10 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
+<<<<<<< HEAD
 ** Copyright (C) 2019 XiaoMi, Inc.
+=======
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -68,7 +71,11 @@ static int tas2557_change_book_page(
 {
 	int nResult = 0;
 
+<<<<<<< HEAD
 	if ((pTAS2557->mnCurrentBook == nBook)
+=======
+	if ((pTAS2557->mnCurrentBook == nBook) 
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		&& pTAS2557->mnCurrentPage == nPage)
 		goto end;
 
@@ -136,7 +143,11 @@ static int tas2557_dev_read(
 				TAS2557_PAGE_REG(nRegister));
 	}
 
+<<<<<<< HEAD
 	nResult = tas2557_change_book_page(pTAS2557,
+=======
+	nResult = tas2557_change_book_page(pTAS2557, 
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 				TAS2557_BOOK_ID(nRegister),
 				TAS2557_PAGE_ID(nRegister));
 	if (nResult >= 0) {
@@ -391,7 +402,11 @@ static void irq_work_routine(struct work_struct *work)
 	mutex_lock(&pTAS2557->file_lock);
 #endif
 
+<<<<<<< HEAD
 	if(pTAS2557->mnErrCode & ERROR_FAILSAFE)
+=======
+	if (pTAS2557->mnErrCode & ERROR_FAILSAFE)
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		goto program;
 
 	if (pTAS2557->mbRuntimeSuspend) {
@@ -901,7 +916,10 @@ static struct i2c_driver tas2557_i2c_driver = {
 #if defined(CONFIG_OF)
 			.of_match_table = of_match_ptr(tas2557_of_match),
 #endif
+<<<<<<< HEAD
 			.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+=======
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 		},
 	.probe = tas2557_i2c_probe,
 	.remove = tas2557_i2c_remove,
@@ -914,4 +932,8 @@ MODULE_AUTHOR("Texas Instruments Inc.");
 MODULE_DESCRIPTION("TAS2557 I2C Smart Amplifier driver");
 MODULE_LICENSE("GPL v2");
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs

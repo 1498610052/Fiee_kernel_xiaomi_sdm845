@@ -1,7 +1,10 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
+<<<<<<< HEAD
 ** Copyright (C) 2019 XiaoMi, Inc.
+=======
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -45,6 +48,10 @@
 #include <sound/soc.h>
 #include <sound/initval.h>
 #include <sound/tlv.h>
+<<<<<<< HEAD
+=======
+#include <soc/qcom/socinfo.h>
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 
 #include "tas2557-core.h"
 #include "tas2557-codec.h"

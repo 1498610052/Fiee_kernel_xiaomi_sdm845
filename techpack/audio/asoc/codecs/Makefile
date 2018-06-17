@@ -18,7 +18,11 @@ obj-$(CONFIG_SND_SOC_WCD9335) += snd-soc-wcd9335.o
 obj-$(CONFIG_SND_SOC_WCD_CPE)   += snd-soc-wcd-cpe.o
 obj-$(CONFIG_SND_SOC_WCD934X)	+= wcd934x/
 obj-$(CONFIG_SND_SOC_TAS2557)	+= tas2557/
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_TAS2559)   += tas2559/
+=======
+obj-$(CONFIG_SND_SOC_TAS2559)	+= tas2559/
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 obj-$(CONFIG_SND_SOC_SDM660_CDC) += sdm660_cdc/
 obj-$(CONFIG_SND_SOC_MSM_SDW) += msm_sdw/
 

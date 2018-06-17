@@ -7007,16 +7007,28 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 			       sizeof(msm_mi2s_be_dai_links));
 			total_links += ARRAY_SIZE(msm_mi2s_be_dai_links);
 
+<<<<<<< HEAD
 			if ((get_hw_version_platform() == HARDWARE_PLATFORM_DIPPERN) ||
 				(get_hw_version_platform() == HARDWARE_PLATFORM_URSA) ||
 				(get_hw_version_platform() == HARDWARE_PLATFORM_EQUULEUS) ||
 				(get_hw_version_platform() == HARDWARE_PLATFORM_PERSEUS)) {
+=======
+			if (get_hw_version_platform() == HARDWARE_PLATFORM_DIPPERN ||
+					get_hw_version_platform() == HARDWARE_PLATFORM_URSA ||
+					get_hw_version_platform() == HARDWARE_PLATFORM_EQUULEUS ||
+					get_hw_version_platform() == HARDWARE_PLATFORM_PERSEUS) {
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 				memcpy(msm_tavil_snd_card_dai_links + total_links,
 						msm_quat_mi2s_tas2557_dai_links,
 						sizeof(msm_quat_mi2s_tas2557_dai_links));
 				total_links += ARRAY_SIZE(msm_quat_mi2s_tas2557_dai_links);
+<<<<<<< HEAD
 			} else if ((get_hw_version_platform() == HARDWARE_PLATFORM_POLARIS) ||
 			(get_hw_version_platform() == HARDWARE_PLATFORM_BERYLLIUM)) {
+=======
+			} else if (get_hw_version_platform() == HARDWARE_PLATFORM_POLARIS ||
+					get_hw_version_platform() == HARDWARE_PLATFORM_BERYLLIUM) {
+>>>>>>> 95dd521e0f2c... techpack: asoc: codecs: Import TAS255x codecs
 				memcpy(msm_tavil_snd_card_dai_links + total_links,
 						msm_quat_mi2s_tas2559_dai_links,
 						sizeof(msm_quat_mi2s_tas2559_dai_links));
