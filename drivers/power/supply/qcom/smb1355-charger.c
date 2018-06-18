@@ -54,9 +54,6 @@
 #define CHG_EN_SRC_BIT				BIT(7)
 #define CHG_EN_POLARITY_BIT			BIT(6)
 
-#define CHGR_CHARGING_ENABLE			(CHGR_BASE + 0x42)
-#define CHG_EN_CMD						BIT(0)
-
 #define CFG_REG					(CHGR_BASE + 0x53)
 #define CHG_OPTION_PIN_TRIM_BIT			BIT(7)
 #define BATN_SNS_CFG_BIT			BIT(4)
@@ -578,19 +575,19 @@ static int smb1355_get_prop_batt_charge_type(struct smb1355 *chip,
 
 static int smb1355_get_prop_online(struct smb1355 *chip, union power_supply_propval *val)
 {
-    int rc;
-    u8 stat;
+	int rc;
+	u8 stat;
 
-    rc = smb1355_read(chip, POWER_PATH_STATUS_REG, &stat);
-    if (rc < 0) {
-        pr_err("Couldn't read power path status rc=%d\n", rc);
-        return rc;
-    }
+	rc = smb1355_read(chip, POWER_PATH_STATUS_REG, &stat);
+	if (rc < 0) {
+		pr_err("Couldn't read power path status rc=%d\n", rc);
+		return rc;
+	}
 
-    val->intval = (stat & USE_USBIN_BIT) &&
-                    (stat & VALID_INPUT_POWER_SOURCE_STS_BIT);
+	val->intval = (stat & USE_USBIN_BIT) &&
+				(stat & VALID_INPUT_POWER_SOURCE_STS_BIT);
 
-    return rc;
+	return rc;
 }
 
 static int smb1355_get_prop_health(struct smb1355 *chip, int type)
@@ -794,8 +791,14 @@ static int smb1355_set_parallel_charging(struct smb1355 *chip, bool disable)
 		disable = true;
 	}
 
-	rc = smb1355_masked_write(chip, CHGR_CHARGING_ENABLE,
-			CHG_EN_CMD, disable ? 0 : CHG_EN_CMD);
+	/*
+	 * Configure charge enable for high polarity and
+	 * When disabling charging set it to cmd register control(cmd bit=0)
+	 * When enabling charging set it to pin control
+	 */
+	rc = smb1355_masked_write(chip, CHGR_CFG2_REG,
+			CHG_EN_POLARITY_BIT | CHG_EN_SRC_BIT,
+			disable ? 0 : CHG_EN_SRC_BIT);
 	if (rc < 0) {
 		pr_err("Couldn't configure charge enable source rc=%d\n", rc);
 		disable = true;

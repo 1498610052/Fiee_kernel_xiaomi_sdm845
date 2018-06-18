@@ -1,5 +1,5 @@
 /* Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -88,19 +88,14 @@ static int sde_backlight_device_update_status(struct backlight_device *bd)
 	if (brightness > display->panel->bl_config.bl_max_level)
 		brightness = display->panel->bl_config.bl_max_level;
 
-	if (!display->panel->bl_config.bl_remap_flag) {
-		/* map UI brightness into driver backlight level with rounding */
-		bl_lvl = mult_frac(brightness, display->panel->bl_config.bl_max_level,
-				display->panel->bl_config.brightness_max_level);
-	} else {
-		bl_lvl = brightness;
-	}
+	/* map UI brightness into driver backlight level with rounding */
+	bl_lvl = mult_frac(brightness, display->panel->bl_config.bl_max_level,
+			display->panel->bl_config.brightness_max_level);
 
 	if (!bl_lvl && brightness)
 		bl_lvl = 1;
 
-	if (bl_lvl && bl_lvl < display->panel->bl_config.bl_min_level
-		&& !display->panel->bl_config.bl_remap_flag)
+	if (bl_lvl && bl_lvl < display->panel->bl_config.bl_min_level)
 		bl_lvl = display->panel->bl_config.bl_min_level;
 
 	if (display->panel->bl_config.bl_update ==
@@ -453,7 +448,7 @@ void sde_connector_schedule_status_work(struct drm_connector *connector,
 				c_conn->esd_status_interval :
 					STATUS_CHECK_INTERVAL_MS;
 			/* Schedule ESD status check */
-			queue_delayed_work(system_power_efficient_wq, &c_conn->status_work,
+			schedule_delayed_work(&c_conn->status_work,
 				msecs_to_jiffies(interval));
 			c_conn->esd_status_check = true;
 		} else {
@@ -705,10 +700,6 @@ void sde_connector_helper_bridge_enable(struct drm_connector *connector)
 				MSM_ENC_TX_COMPLETE);
 	c_conn->allow_bl_update = true;
 
-	/*after the first frame,need to delay some time for visionox*/
-	if (display->panel->bl_config.bl_update_delay)
-		msleep(display->panel->bl_config.bl_update_delay);
-
 	if (!display->is_first_boot && c_conn->bl_device) {
 		c_conn->bl_device->props.power = FB_BLANK_UNBLANK;
 		c_conn->bl_device->props.state &= ~BL_CORE_FBBLANK;
@@ -738,28 +729,6 @@ int sde_connector_clk_ctrl(struct drm_connector *connector, bool enable)
 				DSI_ALL_CLKS, state);
 
 	return rc;
-}
-
-bool sde_connector_mode_needs_full_range(struct drm_connector *connector)
-{
-	struct sde_connector *c_conn;
-
-	if (!connector) {
-		SDE_ERROR("invalid argument\n");
-		return false;
-	}
-
-	c_conn = to_sde_connector(connector);
-
-	if (!c_conn->display) {
-		SDE_ERROR("invalid argument\n");
-		return false;
-	}
-
-	if (!c_conn->ops.mode_needs_full_range)
-		return false;
-
-	return c_conn->ops.mode_needs_full_range(c_conn->display);
 }
 
 static void sde_connector_destroy(struct drm_connector *connector)
@@ -1946,7 +1915,7 @@ static void sde_connector_check_status_work(struct work_struct *work)
 		/* If debugfs property is not set then take default value */
 		interval = conn->esd_status_interval ?
 			conn->esd_status_interval : STATUS_CHECK_INTERVAL_MS;
-		queue_delayed_work(system_power_efficient_wq, &conn->status_work,
+		schedule_delayed_work(&conn->status_work,
 			msecs_to_jiffies(interval));
 		return;
 	}

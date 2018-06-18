@@ -22,9 +22,6 @@
 #include <linux/i2c.h>
 #include <linux/input.h>
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif
 
 #include "nt36xxx_mem_map.h"
 
@@ -83,9 +80,6 @@ extern const uint16_t gesture_key_array[];
 #define BOOT_UPDATE_FIRMWARE 1
 #define BOOT_UPDATE_FIRMWARE_NAME "novatek_nt36672_e10.fw"
 
-/*---ESD Protect.---*/
-#define NVT_TOUCH_ESD_PROTECT 0
-#define NVT_TOUCH_ESD_CHECK_PERIOD 1500	/* ms */
 #define NVT_LOCKDOWN_SIZE	8
 
 struct nvt_config_info {
@@ -122,8 +116,6 @@ struct nvt_ts_data {
 	int8_t phys[32];
 #if defined(CONFIG_DRM)
 	struct notifier_block notifier;
-#elif defined(CONFIG_HAS_EARLYSUSPEND)
-	struct early_suspend early_suspend;
 #endif
 	uint8_t fw_ver;
 	uint8_t x_num;
@@ -191,6 +183,9 @@ typedef enum {
 /*---extern structures---*/
 extern struct nvt_ts_data *ts;
 
+//----kmem cache------
+extern struct kmem_cache *kmem_ts_data_pool;
+
 /*---extern functions---*/
 extern int32_t CTP_I2C_READ(struct i2c_client *client, uint16_t address, uint8_t *buf, uint16_t len);
 extern int32_t CTP_I2C_WRITE(struct i2c_client *client, uint16_t address, uint8_t *buf, uint16_t len);
@@ -200,9 +195,6 @@ extern int32_t nvt_check_fw_reset_state(RST_COMPLETE_STATE check_reset_state);
 extern int32_t nvt_get_fw_info(void);
 extern int32_t nvt_clear_fw_status(void);
 extern int32_t nvt_check_fw_status(void);
-#if NVT_TOUCH_ESD_PROTECT
-extern void nvt_esd_check_enable(uint8_t enable);
-#endif /* #if NVT_TOUCH_ESD_PROTECT */
 extern void nvt_stop_crc_reboot(void);
 extern int32_t nvt_get_lockdown_info(char *lockdata);
 

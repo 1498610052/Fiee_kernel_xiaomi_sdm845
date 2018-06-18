@@ -1,5 +1,5 @@
 /* Copyright (c) 2016-2018 The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -85,7 +85,7 @@ enum hvdcp3_type {
 #define DCIN_ADAPTER_VOTER		"DCIN_ADAPTER_VOTER"
 #define CHG_AWAKE_VOTER			"CHG_AWAKE_VOTER"
 #define DC_AWAKE_VOTER			"DC_AWAKE_VOTER"
-#define CC_FLOAT_VOTER         		"CC_FLOAT_VOTER"
+#define CC_FLOAT_VOTER			"CC_FLOAT_VOTER"
 #define WBC_VOTER			"WBC_VOTER"
 #define MOISTURE_VOTER			"MOISTURE_VOTER"
 #define HVDCP2_ICL_VOTER		"HVDCP2_ICL_VOTER"
@@ -95,6 +95,7 @@ enum hvdcp3_type {
 #define PD_NOT_SUPPORTED_VOTER		"PD_NOT_SUPPORTED_VOTER"
 #define DCIN_USER_VOTER			"DCIN_USER_VOTER"
 #define UNSTANDARD_QC2_VOTER		"UNSTANDARD_QC2_VOTER"
+#define PD_NOT_SUPPORTED_VOTER		"PD_NOT_SUPPORTED_VOTER"
 
 #define VCONN_MAX_ATTEMPTS	3
 #define OTG_MAX_ATTEMPTS	3
@@ -364,11 +365,11 @@ struct smb_charger {
 	struct delayed_work	reg_work;
 	struct delayed_work	uusb_otg_work;
 	struct delayed_work	bb_removal_work;
-	struct delayed_work     monitor_low_temp_work;
+	struct delayed_work	monitor_low_temp_work;
 	struct delayed_work	cc_float_charge_work;
 	struct delayed_work	typec_reenable_work;
-	struct delayed_work     charger_type_recheck;
-	struct delayed_work     connector_health_work;
+	struct delayed_work	charger_type_recheck;
+	struct delayed_work	connector_health_work;
 	struct delayed_work	dc_input_current_work;
 	struct delayed_work	check_vbus_work;
 
@@ -399,7 +400,7 @@ struct smb_charger {
 	int			fake_batt_status;
 	bool			step_chg_enabled;
 	bool			sw_jeita_enabled;
-	bool                    dynamic_fv_enabled;
+	bool			dynamic_fv_enabled;
 	bool			wireless_charging_flag;
 	bool			wireless_support;
 	bool			is_hdc;
@@ -436,7 +437,6 @@ struct smb_charger {
 	bool			disable_stat_sw_override;
 	bool			in_chg_lock;
 	bool			fcc_stepper_enable;
-	bool			ufp_only_mode;
 
 	/* workaround flag */
 	u32			wa_flags;
@@ -669,7 +669,6 @@ int smblib_get_quick_charge_type(struct smb_charger *chg);
 int smblib_set_prop_rerun_apsd(struct smb_charger *chg,
 				const union power_supply_propval *val);
 int smblib_toggle_stat(struct smb_charger *chg, int reset);
-int smblib_force_ufp(struct smb_charger *chg);
 int smblib_set_prop_wireless_wakelock(struct smb_charger *chg,
 				const union power_supply_propval *val);
 

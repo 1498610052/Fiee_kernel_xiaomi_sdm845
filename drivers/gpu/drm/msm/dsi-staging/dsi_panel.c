@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,10 +31,6 @@
 
 #include <drm/drm_notifier.h>
 #include <soc/qcom/socinfo.h>
-
-#ifdef CONFIG_KLAPSE
-#include <linux/klapse.h>
-#endif
 
 /**
  * topology is currently defined by a set of following 3 values:
@@ -352,13 +348,13 @@ static int dsi_panel_gpio_release(struct dsi_panel *panel)
 	return rc;
 }
 
- void drm_panel_reset_skip_enable(bool enable)
+void drm_panel_reset_skip_enable(bool enable)
 {
 	if (g_panel)
 		g_panel->panel_reset_skip = enable;
 }
 
- void drm_dsi_ulps_enable(bool enable)
+void drm_dsi_ulps_enable(bool enable)
 {
 	if (g_panel) {
 		g_panel->ulps_enabled = enable;
@@ -390,7 +386,7 @@ int dsi_panel_trigger_esd_attack(struct dsi_panel *panel)
 	return -EINVAL;
 }
 
- void drm_dsi_ulps_suspend_enable(bool enable)
+void drm_dsi_ulps_suspend_enable(bool enable)
 {
 	if (g_panel)
 		g_panel->ulps_suspend_enabled = enable;
@@ -485,9 +481,8 @@ static int dsi_panel_power_on(struct dsi_panel *panel)
 
 		if (panel->off_keep_reset) {
 			rc = dsi_panel_reset(panel);
-			if (rc) {
+			if (rc)
 				pr_err("[%s] failed to reset panel, rc=%d\n", panel->name, rc);
-			}
 		}
 		return rc;
 	}
@@ -537,8 +532,8 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 	int rc = 0;
 
 	if (g_panel->panel_reset_skip) {
-			pr_info("%s: panel reset skip\n", __func__);
-			return rc;
+		pr_info("%s: panel reset skip\n", __func__);
+		return rc;
 	}
 
 	if (!panel->off_keep_reset) {
@@ -802,7 +797,6 @@ static void dsi_panel_offon_mode_control(struct dsi_panel *panel, u32 bl_lvl)
 				}
 
 				set_skip_panel_dead(true);
-				pr_debug("%s: set set_skip_panel_dead = true \n", __func__);
 				panel_disp_param_send_lock(panel, DISPLAY_OFF_MODE);
 
 				if (panel->disable_cabc)
@@ -815,7 +809,6 @@ static void dsi_panel_offon_mode_control(struct dsi_panel *panel, u32 bl_lvl)
 			panel->dsi_panel_off_mode = false;
 
 			set_skip_panel_dead(false);
-			pr_debug("%s: set set_skip_panel_dead = false \n", __func__);
 			panel_disp_param_send_lock(panel, DISPLAY_ON_MODE);
 		}
 	}
@@ -1029,10 +1022,6 @@ int dsi_panel_set_backlight(struct dsi_panel *panel, u32 bl_lvl)
 		pr_err("Backlight type(%d) not supported\n", bl->type);
 		rc = -ENOTSUPP;
 	}
-	
-#ifdef CONFIG_KLAPSE
-	set_rgb_slider(bl_lvl);
-#endif
 
 	if ((panel->last_bl_lvl == 0 || (panel->skip_dimmingon == STATE_DIM_RESTORE)) && bl_lvl) {
 		if (panel->panel_on_dimming_delay)
@@ -1165,6 +1154,11 @@ static int dsi_panel_parse_timing(struct device *parent,
 		pr_err("failed to read qcom,mdss-dsi-panel-framerate, rc=%d\n",
 		       rc);
 		goto error;
+	}
+
+	if (mode->refresh_rate > 63) {
+		pr_err("failed to apply mdss-dsi-panel-framerate");
+		mode->refresh_rate *= 2;
 	}
 
 	rc = dsi_panel_parse(of_node, fw_entry,
@@ -2501,24 +2495,6 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel,
 		panel->bl_config.type = DSI_BACKLIGHT_UNKNOWN;
 	}
 
-	panel->bl_config.dcs_type_ss = of_property_read_bool(of_node,
-						"qcom,mdss-dsi-bl-dcs-type-ss");
-
-	data = of_get_property(of_node, "qcom,bl-update-flag", NULL);
-	if (!data) {
-		panel->bl_config.bl_update = BL_UPDATE_NONE;
-	} else if (!strcmp(data, "delay_until_first_frame")) {
-		panel->bl_config.bl_update = BL_UPDATE_DELAY_UNTIL_FIRST_FRAME;
-	} else {
-		pr_debug("[%s] No valid bl-update-flag: %s\n",
-						panel->name, data);
-		panel->bl_config.bl_update = BL_UPDATE_NONE;
-	}
-
-	panel->bl_config.dcs_type_ss = of_property_read_bool(of_node,
-						"qcom,mdss-dsi-bl-dcs-type-ss");
-
-
 	data = of_get_property(of_node, "qcom,bl-update-flag", NULL);
 	if (!data) {
 		panel->bl_config.bl_update = BL_UPDATE_NONE;
@@ -2537,22 +2513,24 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel,
 		panel->bl_config.bl_update_delay = 0;
 	} else {
 		panel->bl_config.bl_update_delay = val;
+	}
+
+	panel->bl_config.dcs_type_ss = of_property_read_bool(of_node,
+						"qcom,mdss-dsi-bl-dcs-type-ss");
+
+	data = of_get_property(of_node, "qcom,bl-update-flag", NULL);
+	if (!data) {
+		panel->bl_config.bl_update = BL_UPDATE_NONE;
+	} else if (!strcmp(data, "delay_until_first_frame")) {
+		panel->bl_config.bl_update = BL_UPDATE_DELAY_UNTIL_FIRST_FRAME;
+	} else {
+		pr_debug("[%s] No valid bl-update-flag: %s\n",
+						panel->name, data);
+		panel->bl_config.bl_update = BL_UPDATE_NONE;
 	}
 
 	panel->bl_config.bl_scale = MAX_BL_SCALE_LEVEL;
 	panel->bl_config.bl_scale_ad = MAX_AD_BL_SCALE_LEVEL;
-
-	panel->bl_config.dcs_type_ss = of_property_read_bool(of_node,
-						"qcom,mdss-dsi-bl-dcs-type-ss");
-
-	rc = of_property_read_u32(of_node, "qcom,bl-update-delay", &val);
-	if (rc) {
-		pr_debug("[%s] bl-update-delay unspecified, defaulting to zero\n",
-			 panel->name);
-		panel->bl_config.bl_update_delay = 0;
-	} else {
-		panel->bl_config.bl_update_delay = val;
-	}
 
 	rc = of_property_read_u32(of_node, "qcom,mdss-dsi-bl-min-level", &val);
 	if (rc) {
@@ -3602,7 +3580,6 @@ static int dsi_panel_parse_mi_config(struct dsi_panel *panel,
 
 	rc = of_property_read_u32(of_node,
 		"qcom,mdss-panel-on-dimming-delay", &panel->panel_on_dimming_delay);
-
 	if (rc) {
 		panel->panel_on_dimming_delay = 0;
 		pr_info("Panel on dimming delay disabled\n");
@@ -5008,7 +4985,6 @@ int dsi_panel_disable(struct dsi_panel *panel)
 			goto error;
 		}
 	}
-
 	panel->panel_initialized = false;
 	panel->skip_dimmingon = STATE_NONE;
 	panel->fod_hbm_enabled = false;

@@ -1,6 +1,6 @@
 
 /* Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -153,11 +153,6 @@
 		thermal,batt-level-screen-off = "0 1 1 1 3 4 5 5 5 7 9 14 16";
 	};
 
-	xiaomi_touch {
-		compatible = "xiaomi-touch";
-		status = "ok";
-		touch,name = "xiaomi-touch";
-	};
 };
 
 &labibb {
@@ -307,7 +302,7 @@
 	qcom,fcc-hot-temp-delta = <1650000>;
 	qcom,fcc-cool-temp-delta = <2310000>;
 	qcom,auto-recharge-soc;
-	qcom,sw-jeita-enable;
+	 qcom,sw-jeita-enable;
 	qcom,dynamic-fv-enable;
 	qcom,wireless-flag;
 	qcom,wireless-support;
@@ -393,9 +388,9 @@
 		interrupts = <63 0>;
 		interrupt-names = "nfc_irq";
 		pinctrl-names = "nfc_active", "nfc_suspend";
-                pinctrl-0 = <&nfc_int_active
-                             &nfc_enable_active
-                             &nfc_clk_default>;
+		 pinctrl-0 = <&nfc_int_active
+		              &nfc_enable_active
+		              &nfc_clk_default>;
 		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
 		clocks = <&clock_rpmh RPMH_LN_BB_CLK3>;
 		clock-names = "ref_clk";
@@ -763,8 +758,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x4c>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {
@@ -779,8 +774,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x4d>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {
@@ -795,8 +790,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x4e>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {
@@ -811,8 +806,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x4f>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {
@@ -827,8 +822,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x50>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {
@@ -843,8 +838,8 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pm8998_adc_tm 0x51>;
-		wake-capable-sensor;
 		thermal-governor = "user_space";
+		wake-capable-sensor;
 
 		trips {
 			active-config0 {

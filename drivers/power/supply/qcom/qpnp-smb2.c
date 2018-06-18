@@ -1,5 +1,5 @@
 /* Copyright (c) 2016-2019 The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -191,7 +191,7 @@ struct smb2 {
 	bool			bad_part;
 };
 
-static int __debug_mask;
+static int __debug_mask = PR_OEM | PR_MISC;
 module_param_named(
 	debug_mask, __debug_mask, int, 0600
 );
@@ -213,8 +213,8 @@ module_param_named(
 #define MICRO_1P5A		1500000
 #define MICRO_P1A		100000
 #define OTG_DEFAULT_DEGLITCH_TIME_MS	50
-#define MAX_DCP_ICL_UA  		1800000
-#define DEFAULT_CRITICAL_JEITA_CCOMP 	2975000
+#define MAX_DCP_ICL_UA  1800000
+#define DEFAULT_CRITICAL_JEITA_CCOMP 2975000
 #define JEITA_SOFT_HOT_CC_COMP		1600000
 #define JEITA_SOFT_COOL_CC_COMP		2225000
 #define MIN_WD_BARK_TIME		16
@@ -487,9 +487,6 @@ static int smb2_parse_dt(struct smb2 *chip)
 	chg->fcc_stepper_enable = of_property_read_bool(node,
 					"qcom,fcc-stepping-enable");
 
-	chg->ufp_only_mode = of_property_read_bool(node,
-					"qcom,ufp-only-mode");
-
 	return 0;
 }
 
@@ -546,7 +543,7 @@ static int smb2_usb_get_prop(struct power_supply *psy,
 			rc = smblib_get_prop_usb_present(chg, val);
 		break;
 	case POWER_SUPPLY_PROP_ONLINE:
-		if (chg->report_usb_absent) {
+		if (chg->report_usb_absent){
 			val->intval = 0;
 			break;
 		}
@@ -823,7 +820,7 @@ static int smb2_usb_port_get_prop(struct power_supply *psy,
 		val->intval = POWER_SUPPLY_TYPE_USB;
 		break;
 	case POWER_SUPPLY_PROP_ONLINE:
-		if (chg->report_usb_absent) {
+		if (chg->report_usb_absent){
 			val->intval = 0;
 			break;
 		}
@@ -1202,7 +1199,7 @@ static int smb2_get_prop_wireless_signal(struct smb_charger *chg,
 	return rc;
 }
 
-static int smb2_get_prop_wirless_type(struct smb_charger *chg,
+static int smb2_get_prop_wireless_type(struct smb_charger *chg,
 				union power_supply_propval *val)
 {
 	chg->idtp_psy = power_supply_get_by_name("idt");
@@ -1213,9 +1210,9 @@ static int smb2_get_prop_wirless_type(struct smb_charger *chg,
 	return 1;
 }
 
-/*************************
+/*****************************
  * WIRELESS PSY REGISTRATION *
- *************************/
+ *****************************/
 
 static enum power_supply_property smb2_wireless_props[] = {
 	POWER_SUPPLY_PROP_WIRELESS_VERSION,
@@ -1265,7 +1262,7 @@ static int smb2_wireless_get_prop(struct power_supply *psy,
 		val->intval = 1;
 		break;
 	case POWER_SUPPLY_PROP_TX_ADAPTER:
-		smb2_get_prop_wirless_type(chg, val);
+		smb2_get_prop_wireless_type(chg, val);
 		break;
 	default:
 		return -EINVAL;
@@ -1482,8 +1479,8 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_NOW:
 		rc = smblib_get_prop_from_bms(chg, psp, val);
-	/*	if (!rc)
-			val->intval *= (-1);*/
+		if (!rc)
+			val->intval *= (-1);
 		break;
 	case POWER_SUPPLY_PROP_FCC_STEPPER_ENABLE:
 		val->intval = chg->fcc_stepper_enable;
@@ -1618,8 +1615,6 @@ static int smb2_batt_prop_is_writeable(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_SW_JEITA_ENABLED:
 	case POWER_SUPPLY_PROP_DIE_HEALTH:
 	case POWER_SUPPLY_PROP_DC_THERMAL_LEVELS:
-	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
-	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
 		return 1;
 	default:
 		break;
@@ -1832,8 +1827,7 @@ static int smb2_configure_typec(struct smb_charger *chg)
 	 * over-current happens
 	 */
 	rc = smblib_masked_write(chg, TYPE_C_CFG_REG,
-			FACTORY_MODE_DETECTION_EN_BIT
-			| VCONN_OC_CFG_BIT, 0);
+			FACTORY_MODE_DETECTION_EN_BIT | VCONN_OC_CFG_BIT, 0);
 	if (rc < 0) {
 		dev_err(chg->dev, "Couldn't configure Type-C rc=%d\n", rc);
 		return rc;
@@ -2068,6 +2062,16 @@ static int smb2_init_hw(struct smb2 *chip)
 			"Couldn't configure QC3.0 to 6.6V rc=%d\n", rc);
 		return rc;
 	}
+/*
+	rc = smblib_masked_write(chg, USBIN_ADAPTER_ALLOW_CFG_REG,
+				 USBIN_ADAPTER_ALLOW_MASK,
+				 USBIN_ADAPTER_ALLOW_5V_TO_9V);
+	if (rc < 0) {
+		dev_err(chg->dev,
+			"Couldn't configure QC to 9V rc=%d\n", rc);
+		return rc;
+	}
+*/
 
 	/*
 	 * AICL configuration:
@@ -2354,7 +2358,6 @@ static int smb2_post_init(struct smb2 *chip)
 {
 	struct smb_charger *chg = &chip->chg;
 	int rc;
-	u8 stat;
 
 	/* In case the usb path is suspended, we would have missed disabling
 	 * the icl change interrupt because the interrupt could have been
@@ -2362,36 +2365,13 @@ static int smb2_post_init(struct smb2 *chip)
 	 */
 	rerun_election(chg->usb_icl_votable);
 
-	/* Force charger in Sink Only mode */
-	if (chg->ufp_only_mode) {
-		rc = smblib_read(chg, TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG,
-				&stat);
-		if (rc < 0) {
-			dev_err(chg->dev,
-				"Couldn't read SOFTWARE_CTRL_REG rc=%d\n", rc);
-			return rc;
-		}
-
-		if (!(stat & UFP_EN_CMD_BIT)) {
-			/* configure charger in UFP only mode */
-			rc  = smblib_force_ufp(chg);
-			if (rc < 0) {
-				dev_err(chg->dev,
-					"Couldn't force UFP mode rc=%d\n", rc);
-				return rc;
-			}
-		}
-	} else {
-		/* configure power role for dual-role */
-		rc = smblib_masked_write(chg,
-					TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG,
-					TYPEC_POWER_ROLE_CMD_MASK, 0);
-		if (rc < 0) {
-			dev_err(chg->dev,
-				"Couldn't configure power role for DRP rc=%d\n",
-				rc);
-			return rc;
-		}
+	/* configure power role for dual-role */
+	rc = smblib_masked_write(chg, TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG,
+				 TYPEC_POWER_ROLE_CMD_MASK, 0);
+	if (rc < 0) {
+		dev_err(chg->dev,
+			"Couldn't configure power role for DRP rc=%d\n", rc);
+		return rc;
 	}
 
 	rerun_election(chg->usb_irq_enable_votable);
@@ -3066,9 +3046,8 @@ static void smb2_shutdown(struct platform_device *pdev)
 	/* disable all interrupts */
 	smb2_disable_interrupts(chg);
 
-	if (!chg->ufp_only_mode)
-		/* configure power role for UFP */
-		smblib_masked_write(chg, TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG,
+	/* configure power role for UFP */
+	smblib_masked_write(chg, TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG,
 				TYPEC_POWER_ROLE_CMD_MASK, UFP_EN_CMD_BIT);
 
 	/* force HVDCP to 5V */

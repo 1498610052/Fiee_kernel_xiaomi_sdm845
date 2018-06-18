@@ -3,7 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2017, Focaltech Ltd. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -67,8 +67,6 @@
 #include <linux/ioctl.h>
 #include <linux/vmalloc.h>
 #include "focaltech_common.h"
-#include <linux/firmware.h>
-#include <linux/power_supply.h>
 
 /*****************************************************************************
 * Private constant and macro definitions using #define
@@ -102,6 +100,7 @@
 #define TOUCH_IN_KEY(x, key_x)              TOUCH_IN_RANGE(x, key_x, FTS_KEY_WIDTH)
 
 #define FTS_LOCKDOWN_INFO_SIZE				8
+#define LOCKDOWN_INFO_ADDR					0x1FA0
 /*****************************************************************************
 * Private enumerations, structures and unions using typedef
 *****************************************************************************/
@@ -120,13 +119,6 @@ struct fts_ts_platform_data {
 	u32 x_min;
 	u32 y_min;
 	u32 max_touch_number;
-	u32 timeout_read_reg;
-	const char *project_name;
-	u32 open_min;
-	bool reset_when_resume;
-	u32 lockdown_info_addr;
-	bool check_display_name;
-	bool cutoff_power;
 };
 
 struct ts_event {
@@ -150,7 +142,6 @@ struct fts_ts_data {
 	struct regulator *vsp;
 	struct regulator *vsn;
 	struct regulator *vddio;
-	struct regulator *avdd;
 	spinlock_t irq_lock;
 	struct mutex report_mutex;
 	int irq;
@@ -179,10 +170,6 @@ struct fts_ts_data {
 	bool fw_forceupdate;
 	struct work_struct suspend_work;
 	struct work_struct resume_work;
-#ifdef CONFIG_TOUCHSCREEN_FTS_POWER_SUPPLY
-	struct work_struct power_supply_work;
-	int is_usb_exist;
-#endif
 	struct workqueue_struct *event_wq;
 	struct completion dev_pm_suspend_completion;
 #if FTS_PINCTRL_EN
@@ -196,20 +183,11 @@ struct fts_ts_data {
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
 	struct early_suspend early_suspend;
 #endif
-#ifdef CONFIG_TOUCHSCREEN_FTS_POWER_SUPPLY
-	struct notifier_block power_supply_notifier;
-#endif
 	struct dentry *debugfs;
 	struct proc_dir_entry *tp_selftest_proc;
 	struct proc_dir_entry *tp_data_dump_proc;
 	struct proc_dir_entry *tp_fw_version_proc;
 	struct proc_dir_entry *tp_lockdown_info_proc;
-#ifdef CONFIG_TOUCHSCREEN_XIAOMI_TOUCHFEATURE
-	bool palm_sensor_switch;
-	bool palm_sensor_changed;
-	struct class *tp_class;
-	bool gamemode_enabled;
-#endif
 
 };
 
