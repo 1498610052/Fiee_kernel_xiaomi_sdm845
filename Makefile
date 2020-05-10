@@ -1,7 +1,7 @@
 VERSION = 4
 PATCHLEVEL = 9
 SUBLEVEL = 222
-EXTRAVERSION =
+EXTRAVERSION =-Fiee-Kernel
 NAME = Roaring Lionus
 
 # *DOCUMENTATION*
@@ -749,7 +749,7 @@ KBUILD_CFLAGS	+= -mcpu=cortex-a55 -mtune=cortex-a55
 endif
 
 ifdef CONFIG_LLVM_POLLY
-KBUILD_CFLAGS	+= -mllvm -polly \
+# KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-run-dce \
 		   -mllvm -polly-run-inliner \
 		   -mllvm -polly-opt-fusion=max \
